@@ -20,15 +20,11 @@ class TwitterConnectionImpl extends TwitterConnection{
   def retrieveTweets(handle: String, total: Int): ResponseList[Status] = {
     val cb = new ConfigurationBuilder()
 
-//    Logger.info("System properties: " + sys.props)
-//    Logger.info("Env properties: " + sys.env)
-    Logger.info("Properties: " + Properties.envOrElse("consumerKey", "consumerKey is not set!!"))
-
     cb.setDebugEnabled(true)
-      .setOAuthConsumerKey(sys.props("consumerKey"))
-      .setOAuthConsumerSecret(sys.props("consumerSecret"))
-      .setOAuthAccessToken(sys.props("accessToken"))
-      .setOAuthAccessTokenSecret(sys.props("accessTokenSecret"))
+      .setOAuthConsumerKey(Properties.envOrElse("consumerKey", sys.props("consumerKey")))
+      .setOAuthConsumerSecret(Properties.envOrElse("consumerSecret", sys.props("consumerSecret")))
+      .setOAuthAccessToken(Properties.envOrElse("accessToken", sys.props("accessToken")))
+      .setOAuthAccessTokenSecret(Properties.envOrElse("accessTokenSecret", sys.props("accessTokenSecret")))
 
     val tf = new TwitterFactory(cb.build())
     val twitter = tf.getInstance()
