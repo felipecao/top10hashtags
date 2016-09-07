@@ -16,7 +16,7 @@ class HashtagServiceImpl extends HashtagService {
 
     return userTweets
       .flatMap(s => pattern.findAllIn(s.getText))
-      .groupBy(_.toString().toLowerCase)
+      .groupBy(_.toString())
       .keys
       .take(10)
       .toList
