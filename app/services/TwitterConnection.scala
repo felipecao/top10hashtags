@@ -4,6 +4,7 @@ import javax.inject.Singleton
 
 import twitter4j.conf.ConfigurationBuilder
 import twitter4j.{Paging, ResponseList, Status, TwitterFactory}
+import play.api.Logger
 
 trait TwitterConnection {
   val MaxTweets = 2000
@@ -16,6 +17,9 @@ class TwitterConnectionImpl extends TwitterConnection{
 
   def retrieveTweets(handle: String, total: Int): ResponseList[Status] = {
     val cb = new ConfigurationBuilder()
+
+    Logger.info("System properties: " + sys.props)
+    Logger.info("Env properties: " + sys.env)
 
     cb.setDebugEnabled(true)
       .setOAuthConsumerKey(sys.props("consumerKey"))
