@@ -7,10 +7,10 @@ trait TwitterService {
 }
 
 @Singleton
-class TwitterServiceImpl @Inject() (twitterConnection: TwitterConnectionImpl, hashtagService: HashtagServiceImpl) extends TwitterService {
+class TwitterServiceImpl @Inject() (twitterConnection: TwitterConnectionImpl, hashtagRanker: HashtagRankerImpl) extends TwitterService {
   override def top10Hashtags(handle: String, limit: Int): Seq[String] = {
     val userTweets = twitterConnection.retrieveTweets(handle, limit)
 
-    return hashtagService.extractTop10HashtagsFromTweets(userTweets)
+    return hashtagRanker.extractTop10HashtagsFromTweets(userTweets)
   }
 }
