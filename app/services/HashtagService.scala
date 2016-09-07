@@ -6,12 +6,12 @@ import scala.collection.JavaConversions._
 import javax.inject.Singleton
 
 trait HashtagService {
-  def extractTop10HashtagsFromTweets(userTweets: ResponseList[Status]): Seq[String]
+  def extractTop10HashtagsFromTweets(userTweets: Seq[Status]): Seq[String]
 }
 
 @Singleton
 class HashtagServiceImpl extends HashtagService {
-  override def extractTop10HashtagsFromTweets(userTweets: ResponseList[Status]): Seq[String] = {
+  override def extractTop10HashtagsFromTweets(userTweets: Seq[Status]): Seq[String] = {
     val pattern = "#[a-zA-Z0-9]*".r // matches the '#' sign followed by whatever text
 
     return userTweets

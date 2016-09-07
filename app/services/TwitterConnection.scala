@@ -3,21 +3,38 @@ package services
 import javax.inject.Singleton
 
 import twitter4j.conf.ConfigurationBuilder
-import twitter4j.{Paging, ResponseList, Status, TwitterFactory}
+import twitter4j._
 import play.api.Logger
+import collection.JavaConverters._
+import scala.collection.mutable.ListBuffer
 
 import scala.util.Properties
 
 trait TwitterConnection {
   val MaxTweets = 2000
   val FirstPage = 1
-  def retrieveTweets(handle: String, limit: Int): ResponseList[Status]
+  def retrieveTweets(handle: String, limit: Int): Seq[Status]
 }
 
 @Singleton
 class TwitterConnectionImpl extends TwitterConnection{
 
-  def retrieveTweets(handle: String, total: Int): ResponseList[Status] = {
+  def retrieveTweets(handle: String, total: Int): Seq[Status] = {
+    val limit = math.min(total, MaxTweets)
+    var page = FirstPage
+    val tweets = ListBuffer.empty[Status]
+
+    tweets.++=(fetchTweets(handle, page, limit))
+
+    while(tweets.size < limit) {
+      page += 1
+      tweets.++=(fetchTweets(handle, page, limit))
+    }
+
+    return tweets
+  }
+
+  private def fetchTweets(handle: String, page: Int, limit: Int): Seq[Status] = {
     val cb = new ConfigurationBuilder()
 
     cb.setDebugEnabled(true)
@@ -28,8 +45,7 @@ class TwitterConnectionImpl extends TwitterConnection{
 
     val tf = new TwitterFactory(cb.build())
     val twitter = tf.getInstance()
-    val limit = math.min(total, MaxTweets)
 
-    return twitter.getUserTimeline(handle, new Paging(FirstPage, limit))
+    return twitter.getUserTimeline(handle, new Paging(page, limit)).asScala
   }
 }
