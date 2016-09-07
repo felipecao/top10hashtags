@@ -6,6 +6,8 @@ import twitter4j.conf.ConfigurationBuilder
 import twitter4j.{Paging, ResponseList, Status, TwitterFactory}
 import play.api.Logger
 
+import scala.util.Properties
+
 trait TwitterConnection {
   val MaxTweets = 2000
   val FirstPage = 1
@@ -18,8 +20,9 @@ class TwitterConnectionImpl extends TwitterConnection{
   def retrieveTweets(handle: String, total: Int): ResponseList[Status] = {
     val cb = new ConfigurationBuilder()
 
-    Logger.info("System properties: " + sys.props)
-    Logger.info("Env properties: " + sys.env)
+//    Logger.info("System properties: " + sys.props)
+//    Logger.info("Env properties: " + sys.env)
+    Logger.info("Properties: " + Properties.envOrElse("consumerKey", "consumerKey is not set!!"))
 
     cb.setDebugEnabled(true)
       .setOAuthConsumerKey(sys.props("consumerKey"))
